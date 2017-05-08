@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: hyeonsik
  * Date: 2017-04-30
- * Time: ¿ÀÈÄ 11:09
+ * Time: ï¿½ï¿½ï¿½ï¿½ 11:09
  */
 require_once APPPATH . '/libraries/JWT.php';
 use \Firebase\JWT\JWT;
@@ -65,7 +65,6 @@ class Groups_model extends CI_Model
                 $order["OrderName"] = $row->OrderName;
                 $order["Memo"] = $row->Memo;
                 $order["OrderDate"] = $row->OrderDate;
-                $order["OrderName"] = $row->OrderName;
 
                 array_push($result[$row->CustomerIDX]["Orders"], $order);
             }
