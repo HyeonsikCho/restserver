@@ -44,6 +44,8 @@ class AddCustomer extends REST_Controller {
         $json['newtoken'] = parent::checkIfValidToken($param['token']);
         $param['GroupID'] = $this->Users_model->getGroupIDfromToken($param['token']);
 
+        unset($param['token']);
+
         if($this->Customers_model->InsertCustomer($param)) {
             $json['value'] = 'successed';
             $this->response(array('result' => $json));
