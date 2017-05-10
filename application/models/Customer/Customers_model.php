@@ -26,4 +26,28 @@ class Customers_model extends CI_Model
             return false;
         }
     }
+
+    public function GetCustomers($param) {
+        $this->db->select('CustomerIDX, Name');
+        $this->db->where('GroupID', $param['GroupID']);
+        $this->db->like('Name', $param['keyword']);
+        $query = $this->db->get('pc_customer');
+
+        if($query) {
+            $result = array();
+
+            foreach ($query->result() as $row)
+            {
+                $info = array(
+                    'CustomerIDX'=>$row->CustomerIDX,
+                    'Name'=>$row->Name
+                );
+                array_push($result, $info);
+            }
+
+            return $result;
+        } else {
+            return null;
+        }
+    }
 }
