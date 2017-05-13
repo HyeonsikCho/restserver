@@ -78,6 +78,16 @@ class Groups_model extends CI_Model
         return $query->result();
     }
 
+    public function addOrder($param) {
+        $query = $this->db->insert('pc_orderlist', $param);
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function IsExistGroupID($gid) {
         $query = $this->db->select('count(*) as cnt')
             ->where('GroupID', $gid)
