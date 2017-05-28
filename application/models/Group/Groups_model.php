@@ -43,6 +43,7 @@ class Groups_model extends CI_Model
         $this->db->from('pc_orderlist');
         $this->db->join('pc_customer', 'pc_customer.CustomerIDX = pc_orderlist.CustomerIDX', 'inner');
         $this->db->where('pc_customer.GroupID', $param['group_id']);
+        $this->db->where('pc_orderlist.OrderState', '320');
         $query = $this->db->get();
 
         if($query) {
@@ -66,6 +67,7 @@ class Groups_model extends CI_Model
                 $order["Memo"] = $row->Memo;
                 $order["OrderDate"] = $row->OrderDate;
                 $order["Price"] = $row->Price;
+                $order["OrderIDX"] = $row->OrderIDX;
 
                 array_push($result[$row->CustomerIDX]["Orders"], $order);
             }
@@ -80,6 +82,30 @@ class Groups_model extends CI_Model
 
     public function addOrder($param) {
         $query = $this->db->insert('pc_orderlist', $param);
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function cancelOrder($param) {
+        $this->db->set('OrderState', '999');
+        $this->db->where('OrderIDX', $param['OrderIDX']);
+        $query = $this->db->update('pc_orderlist');
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function payConfirmOrder($param) {
+        $this->db->set('OrderState', '420');
+        $this->db->where('OrderIDX', $param['OrderIDX']);
+        $query = $this->db->update('pc_orderlist');
 
         if($query) {
             return true;
