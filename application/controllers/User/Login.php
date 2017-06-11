@@ -41,6 +41,7 @@ class Login extends REST_Controller {
             $json["code"] = "0000";
             $json["value"] = "succeeded";
             $json["token"] = $token['id_token'];
+            $json["name"] = $token['name'];
             $this->set_response($token, REST_Controller::HTTP_OK);
             $this->response(array('result' => $json), 200);
         } else {

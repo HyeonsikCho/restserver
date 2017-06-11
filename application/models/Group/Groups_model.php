@@ -68,6 +68,8 @@ class Groups_model extends CI_Model
                 $order["OrderDate"] = $row->OrderDate;
                 $order["Price"] = $row->Price;
                 $order["OrderIDX"] = $row->OrderIDX;
+                $order["Category"] = $row->Category;
+                $order["Orderer"] = $row->Name;
 
                 array_push($result[$row->CustomerIDX]["Orders"], $order);
             }

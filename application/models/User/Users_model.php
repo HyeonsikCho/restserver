@@ -14,21 +14,24 @@ class Users_model extends CI_Model
 	}
 
 	public function Login($id, $pw) {
-		$query = $this->db->select('GroupID')
+		$query = $this->db->select('GroupID, Name')
 			->where('ID', $id)
 			->where('Password', $pw)
 			->get('pc_member');
 
 		if($query->num_rows() == 1) {
 			$token['id'] = $id;
+			$name = "";
 			foreach ($query->result() as $row)
 			{
 				$token['group_id'] = $row->GroupID;
+				$name = $row->Name;
 			}
 
 			$token['iat'] = time();
 			$token['exp'] = time() + LoginConfigHelper::SESSION_VALID_TIME();
 			$output['id_token'] = JWT::encode($token, "hyeonsik");
+			$output['name'] = $name;
 			return $output;
 		} else {
 			return false;
