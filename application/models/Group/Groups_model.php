@@ -38,12 +38,45 @@ class Groups_model extends CI_Model
         }
     }
 
+    public function getCompleteOrders($param)
+    {
+        $this->db->select('*');
+        $this->db->from('pc_orderlist');
+        $this->db->where('GroupID', $param['group_id']);
+        $this->db->where('CustomerIDX', $param['CustomerIDX']);
+        $this->db->where('OrderState', '620');
+        $query = $this->db->get();
+
+        if ($query) {
+            $orders = array();
+            foreach ($query->result() as $row) {
+                $order = array();
+                $order["OrderName"] = $row->OrderName;
+                $order["Memo"] = $row->Memo;
+                $order["OrderDate"] = $row->OrderDate;
+                $order["Price"] = $row->Price;
+                $order["OrderIDX"] = $row->OrderIDX;
+                $order["Category"] = $row->Category;
+
+                array_push($orders, $order);
+            }
+
+            return $orders;
+        } else {
+            return null;
+        }
+
+        return $query->result();
+    }
+
     public function getOrders($param) {
-        $this->db->select('pc_orderlist.*, pc_customer.*');
+        $this->db->select('pc_orderlist.*, pc_customer.*, pc_category.Name as Category');
         $this->db->from('pc_orderlist');
         $this->db->join('pc_customer', 'pc_customer.CustomerIDX = pc_orderlist.CustomerIDX', 'inner');
+        $this->db->join('pc_category', 'pc_orderlist.Category = pc_category.ID', 'inner');
         $this->db->where('pc_customer.GroupID', $param['group_id']);
         $this->db->where('pc_orderlist.OrderState', '320');
+
         $query = $this->db->get();
 
         if($query) {
@@ -106,6 +139,18 @@ class Groups_model extends CI_Model
 
     public function payConfirmOrder($param) {
         $this->db->set('OrderState', '420');
+        $this->db->where('OrderIDX', $param['OrderIDX']);
+        $query = $this->db->update('pc_orderlist');
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function deliveryCompleteOrder($param) {
+        $this->db->set('OrderState', '620');
         $this->db->where('OrderIDX', $param['OrderIDX']);
         $query = $this->db->update('pc_orderlist');
 

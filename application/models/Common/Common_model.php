@@ -19,9 +19,8 @@ class Common_model extends CI_Model
     }
 
     public function GetAllCategories() {
-        $this->db->distinct('Category');
-        $this->db->select('Category');
-        $query = $this->db->get('pc_image_category');
+        $this->db->select('*');
+        $query = $this->db->get('pc_category');
 
         if($query) {
             $result = array();
@@ -29,7 +28,8 @@ class Common_model extends CI_Model
             foreach ($query->result() as $row)
             {
                 $info = array(
-                    'Category'=>$row->Category
+                    'ID'=>$row->ID,
+                    'Name'=>$row->Name
                 );
                 array_push($result, $info);
             }
