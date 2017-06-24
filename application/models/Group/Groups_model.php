@@ -38,6 +38,72 @@ class Groups_model extends CI_Model
         }
     }
 
+    public function getPaperGroup($param) {
+        $this->db->select('*');
+        $this->db->from('pc_paper');
+        $this->db->where('Category', $param['Category']);
+
+        $query = $this->db->get();
+
+        if ($query) {
+            $papergroups = array();
+            foreach ($query->result() as $row) {
+                if(!array_key_exists($row->PaperGroup, $papergroups)) {
+                    $papergroups[$row->PaperGroup] = array();
+                }
+
+                $papergroup = array();
+                $papergroup['PaperName'] = $row->PaperName;
+                $papergroup['Weight'] = $row->Weight;
+                $papergroup['Color'] = $row->Color;
+
+                array_push($papergroups[$row->PaperGroup], $papergroup);
+            }
+
+            return $papergroups;
+        } else {
+            return null;
+        }
+    }
+
+    public function getObtainOrders($param) {
+        $this->db->select('*');
+        $this->db->from('pc_orderlist');
+        $this->db->join('pc_customer', 'pc_customer.CustomerIDX = pc_orderlist.CustomerIDX', 'inner');
+        $this->db->where('pc_orderlist.GroupID', $param['group_id']);
+
+        if(in_array('kind',$param)) {
+            $this->db->where('Category', $param['kind']);
+        }
+
+        if(in_array('CustomerIDX',$param)) {
+            $this->db->where('CustomerIDX', $param['CustomerIDX']);
+        }
+
+        $this->db->where('OrderState', '320');
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+        if ($query) {
+            $orders = array();
+            foreach ($query->result() as $row) {
+                $order = array();
+                $order["Orderer"] = $row->Name;
+                $order["OrderName"] = $row->OrderName;
+                $order["Memo"] = $row->Memo;
+                $order["OrderDate"] = $row->OrderDate;
+                $order["Price"] = $row->Price;
+                $order["OrderIDX"] = $row->OrderIDX;
+                $order["Category"] = $row->Category;
+
+                array_push($orders, $order);
+            }
+
+            return $orders;
+        } else {
+            return null;
+        }
+    }
+
     public function getCompleteOrders($param)
     {
         $this->db->select('*');
@@ -65,8 +131,6 @@ class Groups_model extends CI_Model
         } else {
             return null;
         }
-
-        return $query->result();
     }
 
     public function getOrders($param) {
