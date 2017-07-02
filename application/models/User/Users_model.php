@@ -56,6 +56,26 @@ class Users_model extends CI_Model
 		}
 	}
 
+	public function GetCustomerAddressInfo($param) {
+		$query = $this->db->select('*')
+			->where('CustomerIDX', $param['CustomerIDX'])
+			->get('pc_customer');
+
+		if($query) {
+			foreach ($query->result() as $row)
+			{
+				$info = array();
+				$info['address1'] = $row->Address1;
+				$info['address2'] = $row->Address2;
+				$info['zipcode'] = $row->Zipcode;
+
+				return $info;
+			}
+		} else {
+			return null;
+		}
+	}
+
 	public function UserInfoUpdate($param) {
 		if(array_key_exists('HP', $param))
 			$this->db->set('HP', $param['HP']);

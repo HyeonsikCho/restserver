@@ -2,20 +2,21 @@
 /**
  * Created by PhpStorm.
  * User: hyeonsik
- * Date: 2017-05-13
- * Time: 오후 10:52
+ * Date: 2017-07-02
+ * Time: 오후 11:17
  */
 
 require_once APPPATH . '/libraries/REST_Controller.php';
 require_once APPPATH . '/libraries/JWT.php';
 use \Firebase\JWT\JWT;
 
-class AddOrder extends REST_Controller {
+class UpdateCustomer extends REST_Controller {
+
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Group/Groups_model');
         $this->load->model('User/Users_model');
+        $this->load->model('Customer/Customers_model');
     }
 
     public function index_get()
@@ -38,19 +39,15 @@ class AddOrder extends REST_Controller {
         $this->send($param);
     }
 
+
     public function send($param) {
         $json = array();
         $json['newtoken'] = parent::checkIfValidToken($param['token']);
         $param['GroupID'] = $this->Users_model->getGroupIDfromToken($param['token']);
 
-        $rs = $this->Users_model->GetCustomerAddressInfo($param);
-        $param['Zipcode'] = $rs['zipcode'];
-        $param['Address1'] = $rs['address1'];
-        $param['Address2'] = $rs['address2'];
-
         unset($param['token']);
 
-        if($this->Groups_model->addOrder($param)) {
+        if($this->Customers_model->UpdateCustomer($param)) {
             $json['value'] = 'successed';
             $this->response(array('result' => $json));
         } else {

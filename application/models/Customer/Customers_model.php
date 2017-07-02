@@ -27,8 +27,19 @@ class Customers_model extends CI_Model
         }
     }
 
+    public function UpdateCustomer($param) {
+        $this->db->where('CustomerIDX', $param['CustomerIDX']);
+        $query = $this->db->update('pc_customer', $param);
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function GetCustomers($param) {
-        $this->db->select('CustomerIDX, Name, HP, Address1,Memo');
+        $this->db->select('*');
         $this->db->where('GroupID', $param['GroupID']);
         $this->db->like('Name', $param['keyword']);
         $query = $this->db->get('pc_customer');
@@ -43,7 +54,9 @@ class Customers_model extends CI_Model
                     'Name'=>$row->Name,
                     'HP' => $row->HP,
                     'Address1' => $row->Address1,
-                    'Memo' => $row->Memo
+                    'Address2' => $row->Address2,
+                    'Memo' => $row->Memo,
+                    'Zipcode' => $row->Zipcode
                 );
                 array_push($result, $info);
             }

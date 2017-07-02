@@ -67,7 +67,7 @@ class Groups_model extends CI_Model
     }
 
     public function getObtainOrders($param) {
-        $this->db->select('*');
+        $this->db->select('pc_customer.Name, pc_orderlist.*');
         $this->db->from('pc_orderlist');
         $this->db->join('pc_customer', 'pc_customer.CustomerIDX = pc_orderlist.CustomerIDX', 'inner');
         $this->db->where('pc_orderlist.GroupID', $param['group_id']);
@@ -94,6 +94,9 @@ class Groups_model extends CI_Model
                 $order["Price"] = $row->Price;
                 $order["OrderIDX"] = $row->OrderIDX;
                 $order["Category"] = $row->Category;
+                $order["Address1"] = $row->Address1;
+                $order["Address2"] = $row->Address2;
+                $order["Zipcode"] = $row->Zipcode;
 
                 array_push($orders, $order);
             }
@@ -134,7 +137,9 @@ class Groups_model extends CI_Model
     }
 
     public function getOrders($param) {
-        $this->db->select('pc_orderlist.*, pc_customer.*, pc_category.Name as Category');
+        $this->db->select('pc_orderlist.*, pc_customer.*, pc_category.Name as Category,
+         pc_customer.Zipcode as custzip, pc_customer.Address1 as custadd1, pc_customer.Address2 as custadd2,
+        pc_orderlist.Zipcode as orderzip, pc_orderlist.Address1 as orderadd1, pc_orderlist.Address2 as orderadd2');
         $this->db->from('pc_orderlist');
         $this->db->join('pc_customer', 'pc_customer.CustomerIDX = pc_orderlist.CustomerIDX', 'inner');
         $this->db->join('pc_category', 'pc_orderlist.Category = pc_category.ID', 'inner');
@@ -152,8 +157,9 @@ class Groups_model extends CI_Model
             {
                 if(!array_key_exists($row->CustomerIDX, $result)) {
                     $result[$row->CustomerIDX]["Name"] = $row->Name;
-                    $result[$row->CustomerIDX]["Address1"] = $row->Address1;
-                    $result[$row->CustomerIDX]["Address2"] = $row->Address2;
+                    $result[$row->CustomerIDX]["Address1"] = $row->custadd1;
+                    $result[$row->CustomerIDX]["Address2"] = $row->custadd2;
+                    $result[$row->CustomerIDX]["Zipcode"] = $row->custzip;
                     $result[$row->CustomerIDX]["HP"] = $row->HP;
                     $result[$row->CustomerIDX]["Point"] = $row->Point;
                     $result[$row->CustomerIDX]["Orders"] = array();
@@ -161,6 +167,9 @@ class Groups_model extends CI_Model
 
                 $order = array();
                 $order["OrderName"] = $row->OrderName;
+                $order["Zipcode"] = $row->orderzip;
+                $order["Address1"] = $row->orderadd1;
+                $order["Address2"] = $row->orderadd2;
                 $order["Memo"] = $row->Memo;
                 $order["OrderDate"] = $row->OrderDate;
                 $order["Price"] = $row->Price;
