@@ -2,15 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: hyeonsik
- * Date: 2017-07-06
- * Time: ���� 9:19
+ * Date: 2017-07-07
+ * Time: 오전 11:35
  */
 
 require_once APPPATH . '/libraries/REST_Controller.php';
 require_once APPPATH . '/libraries/JWT.php';
 use \Firebase\JWT\JWT;
 
-class GetUploadInfo extends REST_Controller
+
+class OriginalFileUploadComplete extends REST_Controller
 {
     public function __construct()
     {
@@ -40,26 +41,11 @@ class GetUploadInfo extends REST_Controller
         $this->send($param);
     }
 
-
     public function send($param) {
-        $json = array();
         $json['newtoken'] = parent::checkIfValidToken($param['token']);
         $param['GroupID'] = $this->Users_model->getGroupIDfromToken($param['token']);
 
-        $param['Worker'] = $this->Users_model->getIDfromToken($param['token']);
-        $param['DayIDX'] = $this->Designs_model->GetOriginalFileDayIDX($param);
-
-        $json['StorageFileName'] = $param['StorageFileName'] =
-            date("Ymd") . "-" . $param['DayIDX'] . "." . pathinfo($param['FileName'], PATHINFO_EXTENSION);
-        $json['StorageFilePath'] = $param['StorageFilePath'] =
-            date("Ymd") . "/" . $param['DayIDX'];
-
-        unset($param['token']);
-        unset($param['GroupID']);
-
-        $json['IDX'] = $this->Designs_model->InsertOriginalFileUploadInfo($param);
-
-        if($json['IDX']) {
+        if($this->Designs_model->OriginalFileUploadComplete($param)) {
             $json['value'] = 'successed';
             $this->response(array('result' => $json));
         } else {
