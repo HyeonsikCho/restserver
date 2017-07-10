@@ -22,7 +22,17 @@ class Designs_model extends CI_Model
 
         $count = $query->num_rows();
 
-        return $count+1;
+        return $count + 1;
+    }
+
+    public function GetPreviewFileIDX($param) {
+        $query = $this->db->select('*')
+            ->where('OriginalIDX', $param['OriginalIDX'])
+            ->get('pc_previewfile_history');
+
+        $count = $query->num_rows();
+
+        return $count + 1;
     }
 
     public function getDesignHistories($param){
@@ -47,6 +57,11 @@ class Designs_model extends CI_Model
                 $order["Worker"] = $row->Worker;
                 $order["ProgressRate"] = $row->ProgressRate;
                 $order["RegiDate"] = $row->RegiDate;
+                if($row->InUse == 'Y') {
+                    $order["InUse"] = true;
+                } else {
+                    $order["InUse"] = false;
+                }
 
                 array_push($orders, $order);
             }
@@ -54,6 +69,53 @@ class Designs_model extends CI_Model
             return $orders;
         } else {
             return null;
+        }
+    }
+
+    public function getDesignPreviews($param){
+        $this->db->select('*');
+        $this->db->from('pc_previewfile_history');
+        $this->db->where('OriginalIDX', $param['OriginalIDX']);
+        $this->db->where('InUse', 'Y');
+
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+        if ($query) {
+            $previews = array();
+            foreach ($query->result() as $row) {
+                $preview = array();
+                $preview["IDX"] = $row->IDX;
+                $preview["OriginalIDX"] = $row->OriginalIDX;
+                $preview["FileName"] = $row->FileName;
+                $preview["FileSize"] = $row->FileSize;
+                $preview["StorageFilePath"] = $row->StorageFilePath;
+                $preview["StorageFileName"] = $row->StorageFileName;
+                $preview["Worker"] = $row->Worker;
+                $preview["RegiDate"] = $row->RegiDate;
+                if($row->InUse == 'Y') {
+                    $preview["InUse"] = true;
+                } else {
+                    $preview["InUse"] = false;
+                }
+
+                array_push($previews, $preview);
+            }
+
+            return $previews;
+        } else {
+            return null;
+        }
+    }
+
+    public function deletePreviewFile($param) {
+        $this->db->set('InUse', 'N');
+        $this->db->where('IDX', $param['IDX']);
+        $query = $this->db->update('pc_previewfile_history');
+
+        if($query) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -108,10 +170,32 @@ class Designs_model extends CI_Model
         }
     }
 
+    public function InsertPreviewFileUploadInfo($param) {
+        $query = $this->db->insert('pc_previewfile_history', $param);
+        $IDX = $this->db->insert_id();
+        if($IDX) {
+            return $IDX;
+        } else {
+            return false;
+        }
+    }
+
     public function OriginalFileUploadComplete($param) {
         $this->db->set('InUse', 'Y');
         $this->db->where('IDX', $param['IDX']);
         $query = $this->db->update('pc_originalfile_history');
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function PreviewFileUploadComplete($param) {
+        $this->db->set('InUse', 'Y');
+        $this->db->where('IDX', $param['IDX']);
+        $query = $this->db->update('pc_previewfile_history');
 
         if($query) {
             return true;
