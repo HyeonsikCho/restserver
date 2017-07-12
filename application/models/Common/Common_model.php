@@ -62,6 +62,39 @@ class Common_model extends CI_Model
         }
     }
 
+    public function UpdateOrderInfo($param) {
+        if(array_key_exists('OrderName', $param))
+            $this->db->set('OrderName', $param['OrderName']);
+
+        if(array_key_exists('Zipcode', $param))
+            $this->db->set('Zipcode', $param['Zipcode']);
+
+        if(array_key_exists('Address1', $param))
+            $this->db->set('Address1', $param['Address1']);
+
+        if(array_key_exists('Address2', $param))
+            $this->db->set('Address2', $param['Address2']);
+
+        if(array_key_exists('Price', $param))
+            $this->db->set('Price', $param['Price']);
+
+        if(array_key_exists('Memo', $param))
+            $this->db->set('Memo', $param['Memo']);
+
+        if(array_key_exists('Category', $param))
+            $this->db->set('Category', $param['Category']);
+
+        if(array_key_exists('IsPayed', $param)) {
+            $this->db->set('IsPayed', $param['IsPayed']);
+            $this->db->set('OrderState', '420');
+        }
+
+
+        $this->db->where('OrderIDX', $param['OrderIDX']);
+
+        return $this->db->update('pc_orderlist');
+    }
+
     public function GetTempleteImage($param) {
         $this->db->select('*');
         $this->db->where('category', $param['category']);
