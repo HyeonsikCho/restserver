@@ -91,6 +91,7 @@ class Groups_model extends CI_Model
                 $order["OrderName"] = $row->OrderName;
                 $order["Memo"] = $row->Memo;
                 $order["OrderDate"] = $row->OrderDate;
+                $order['State'] = $row->OrderState;
                 $order["Price"] = $row->Price;
                 $order["OrderIDX"] = $row->OrderIDX;
                 $order["Category"] = $row->Category;
