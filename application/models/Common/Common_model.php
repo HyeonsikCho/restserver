@@ -40,6 +40,29 @@ class Common_model extends CI_Model
         }
     }
 
+    public function GetAllStates() {
+        $this->db->select('*');
+        $query = $this->db->get('pc_states_info');
+
+        if($query) {
+            $result = array();
+
+            foreach ($query->result() as $row)
+            {
+                $info = array(
+                    'StateCode'=>$row->StateCode,
+                    'Name'=>$row->Name,
+                    'Description'=>$row->Description
+                );
+                array_push($result, $info);
+            }
+
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
     public function GetBusinessType($param) {
         $this->db->select('BusinessType');
         $this->db->where('Category', $param['category']);

@@ -72,17 +72,31 @@ class Groups_model extends CI_Model
         $this->db->join('pc_customer', 'pc_customer.CustomerIDX = pc_orderlist.CustomerIDX', 'inner');
         $this->db->where('pc_orderlist.GroupID', $param['group_id']);
 
-        if(in_array('kind',$param)) {
-            $this->db->where('Category', $param['kind']);
+        if(array_key_exists('kind',$param)) {
+            if($param['kind'] != "ALL") {
+                $this->db->where('Category', $param['kind']);
+            }
         }
 
-        if(in_array('CustomerIDX',$param)) {
+        if(array_key_exists('CustomerIDX',$param)) {
             $this->db->where('CustomerIDX', $param['CustomerIDX']);
         }
 
-        $this->db->where('OrderState', '320');
+        if(array_key_exists('StateCode',$param)) {
+            if($param['StateCode'] != "000")
+                $this->db->where('OrderState', $param['StateCode']);
+        }
+
+        if(array_key_exists('StartDate',$param)) {
+            $this->db->where('OrderDate >=', $param['StartDate']);
+        }
+
+        if(array_key_exists('EndDate',$param)) {
+            $this->db->where('OrderDate <=', $param['EndDate'] . " 23:59:59");
+        }
+
+        //$this->db->where('OrderState', '320');
         $query = $this->db->get();
-        //echo $this->db->last_query();
         if ($query) {
             $orders = array();
             foreach ($query->result() as $row) {
