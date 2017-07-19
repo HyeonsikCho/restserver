@@ -75,7 +75,7 @@ class Designs_model extends CI_Model
     public function getDesignPreviews($param){
         $this->db->select('*');
         $this->db->from('pc_previewfile_history');
-        $this->db->where('OriginalIDX', $param['OriginalIDX']);
+        $this->db->where('OrderIDX', $param['OrderIDX']);
         $this->db->where('InUse', 'Y');
 
         $query = $this->db->get();
@@ -116,6 +116,34 @@ class Designs_model extends CI_Model
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function GetPreviewInfos($param) {
+        $this->db->select('*');
+        $this->db->from('pc_public_templete');
+        $this->db->where('Category', $param['Category']);
+        $this->db->where('Field', $param['Field']);
+        $query = $this->db->get();
+
+        //echo $this->db->last_query();
+        if ($query) {
+            $previews = array();
+            foreach ($query->result() as $row) {
+                $preview = array();
+                $preview["IDX"] = $row->IDX;
+                $preview["Title"] = $row->FileName;
+                $preview["StorageFilePath"] = $row->PreviewStorageFilePath;
+                $preview["StorageFileName"] = $row->PreviewStorageFileName;
+                $preview["FilePath"] = $row->PreviewStorageFilePath;
+                $preview["FileName"] = $row->PreviewStorageFileName;
+
+                array_push($previews, $preview);
+            }
+
+            return $previews;
+        } else {
+            return null;
         }
     }
 

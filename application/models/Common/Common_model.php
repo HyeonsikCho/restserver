@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hyeonsik
  * Date: 2017-06-01
- * Time: ¿ÀÀü 12:29
+ * Time: ï¿½ï¿½ï¿½ï¿½ 12:29
  */
 
 require_once APPPATH . '/libraries/JWT.php';
@@ -30,6 +30,29 @@ class Common_model extends CI_Model
                 $info = array(
                     'ID'=>$row->ID,
                     'Name'=>$row->Name
+                );
+                array_push($result, $info);
+            }
+
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    public function GetAllStates() {
+        $this->db->select('*');
+        $query = $this->db->get('pc_states_info');
+
+        if($query) {
+            $result = array();
+
+            foreach ($query->result() as $row)
+            {
+                $info = array(
+                    'StateCode'=>$row->StateCode,
+                    'Name'=>$row->Name,
+                    'Description'=>$row->Description
                 );
                 array_push($result, $info);
             }
@@ -93,6 +116,29 @@ class Common_model extends CI_Model
         $this->db->where('OrderIDX', $param['OrderIDX']);
 
         return $this->db->update('pc_orderlist');
+    }
+
+    public function GetAllTempletes($param) {
+        $this->db->distinct();
+        $this->db->select('Field');
+        $this->db->where('Category', $param['Category']);
+        $query = $this->db->get('pc_public_templete');
+
+        if($query) {
+            $result = array();
+
+            foreach ($query->result() as $row)
+            {
+                $info = array(
+                    'Field'=>$row->Field
+                );
+                array_push($result, $info);
+            }
+
+            return $result;
+        } else {
+            return false;
+        }
     }
 
     public function GetTempleteImage($param) {
