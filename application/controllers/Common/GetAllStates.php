@@ -40,7 +40,7 @@ class GetAllStates extends REST_Controller {
         $json = array();
         $json['newtoken'] = parent::checkIfValidToken($param['token']);
 
-        $states = $this->Common_model->GetAllStates();
+        $states = $this->Common_model->GetAllStates($param);
         if($states != null) {
             $json['value'] = 'successed';
             $json['states'] = $states;

@@ -2,21 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: hyeonsik
- * Date: 2017-05-06
- * Time: 오전 11:29
+ * Date: 2017-07-17
+ * Time: 오전 1:27
  */
-
 
 require_once APPPATH . '/libraries/REST_Controller.php';
 require_once APPPATH . '/libraries/JWT.php';
 use \Firebase\JWT\JWT;
 
-class IsExistMemberID extends REST_Controller {
-
+class GetAllTempletes extends REST_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('User/Users_model');
+        $this->load->model('Common/Common_model');
     }
 
     public function index_get()
@@ -39,16 +37,19 @@ class IsExistMemberID extends REST_Controller {
         $this->send($param);
     }
 
+    public function send($param) {
+        $json = array();
+        $json['newtoken'] = parent::checkIfValidToken($param['token']);
 
-    public function send($id) {
-        if($this->Users_model->IsExistAccount($id)) {
+        $templetes = $this->Common_model->GetAllTempletes($param);
+        if($templetes != null) {
             $json['value'] = 'successed';
-            $json['exist'] = true;
+            $json['templetes'] = $templetes;
+            $this->response(array('result' => $json));
         } else {
-            $json['value'] = 'successed';
-            $json['exist'] = false;
+            $json['value'] = 'failed';
+            $json['templetes'] = "";
+            $this->response(array('result' => $json));
         }
-
-        $this->response(array('result' => $json));
     }
 }

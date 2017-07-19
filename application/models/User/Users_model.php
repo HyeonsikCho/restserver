@@ -13,14 +13,14 @@ class Users_model extends CI_Model
 		$this->load->database();
 	}
 
-	public function Login($id, $pw) {
+	public function Login($param) {
 		$query = $this->db->select('GroupID, Name')
-			->where('ID', $id)
-			->where('Password', $pw)
+			->where('ID', $param['user_id'])
+			->where('Password', $param['user_pw'])
 			->get('pc_member');
 
 		if($query->num_rows() == 1) {
-			$token['id'] = $id;
+			$token['id'] = $param['user_id'];
 			$name = "";
 			foreach ($query->result() as $row)
 			{

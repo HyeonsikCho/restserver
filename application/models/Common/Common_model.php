@@ -118,6 +118,30 @@ class Common_model extends CI_Model
         return $this->db->update('pc_orderlist');
     }
 
+    public function GetAllTempletes($param) {
+        $this->db->select('*');
+        $this->db->distinct();
+        $this->db->where('Category', $param['Category']);
+        $query = $this->db->get('pc_public_templete');
+
+        if($query) {
+            $result = array();
+
+            foreach ($query->result() as $row)
+            {
+                $info = array(
+                    'Category'=>$row->Category,
+                    'Field'=>$row->Field
+                );
+                array_push($result, $info);
+            }
+
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
     public function GetTempleteImage($param) {
         $this->db->select('*');
         $this->db->where('category', $param['category']);

@@ -38,7 +38,7 @@ class GetAllCategories extends REST_Controller {
 
     public function send($param) {
         $json = array();
-        //$json['newtoken'] = parent::checkIfValidToken($param['token']);
+        $json['newtoken'] = parent::checkIfValidToken($param['token']);
 
         $categories = $this->Common_model->GetAllCategories();
         if($categories != null) {
