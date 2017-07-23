@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hyeonsik
  * Date: 2017-06-01
- * Time: ¿ÀÀü 12:29
+ * Time: ï¿½ï¿½ï¿½ï¿½ 12:29
  */
 
 require_once APPPATH . '/libraries/JWT.php';
@@ -119,8 +119,8 @@ class Common_model extends CI_Model
     }
 
     public function GetAllTempletes($param) {
-        $this->db->select('*');
         $this->db->distinct();
+        $this->db->select('Field');
         $this->db->where('Category', $param['Category']);
         $query = $this->db->get('pc_public_templete');
 
@@ -130,7 +130,6 @@ class Common_model extends CI_Model
             foreach ($query->result() as $row)
             {
                 $info = array(
-                    'Category'=>$row->Category,
                     'Field'=>$row->Field
                 );
                 array_push($result, $info);

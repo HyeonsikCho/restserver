@@ -38,6 +38,27 @@ class Groups_model extends CI_Model
         }
     }
 
+    public function getProductGroup($param) {
+        $this->db->select('*');
+        $this->db->from('pc_cate');
+        $this->db->where('Category', $param['Category']);
+
+        $query = $this->db->get();
+
+        if ($query) {
+            $productgroups = array();
+            foreach ($query->result() as $row) {
+                $productgroup = $row->Product;
+
+                array_push($productgroups, $productgroup);
+            }
+
+            return $productgroups;
+        } else {
+            return null;
+        }
+    }
+
     public function getPaperGroup($param) {
         $this->db->select('*');
         $this->db->from('pc_paper');
