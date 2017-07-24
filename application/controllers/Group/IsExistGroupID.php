@@ -18,21 +18,29 @@ class IsExistGroupID extends REST_Controller {
         $this->load->model('Group/Groups_model');
     }
 
-    public function index_get() {
-        $gid = $this->get('group_id');
+    public function index_get()
+    {
+        $param = array();
+        foreach ($this->get() as $key => $value) {
+            $param[$key] = $this->input->get($key);
+        }
 
-        $this->send($gid);
+        $this->send($param);
     }
 
-    public function index_post() {
-        $gid = $this->post('group_id');
+    public function index_post()
+    {
+        $param = array();
+        foreach ($this->post() as $key => $value) {
+            $param[$key] = $this->input->post($key);
+        }
 
-        $this->send($gid);
+        $this->send($param);
     }
 
 
     public function send($gid) {
-        if($this->Groups_model->IsExistGroupID($gid)) {
+        if($this->Groups_model->IsExistGroupID($param)) {
             $json['value'] = 'successed';
             $json['exist'] = true;
         } else {

@@ -38,6 +38,71 @@ class Groups_model extends CI_Model
         }
     }
 
+    public function getProductGroup($param) {
+        $this->db->select('*');
+        $this->db->from('pc_cate');
+        $this->db->where('Category', $param['Category']);
+
+        $query = $this->db->get();
+
+        if ($query) {
+            $productgroups = array();
+            foreach ($query->result() as $row) {
+                $productgroup = $row->Product;
+
+                array_push($productgroups, $productgroup);
+            }
+
+            return $productgroups;
+        } else {
+            return null;
+        }
+    }
+
+    public function getSizeGroup($param) {
+        $this->db->select('*');
+        $this->db->from('pc_size');
+        $this->db->where('Product', $param['Product']);
+        $this->db->join('pc_cate','pc_size.CateIDX = pc_cate.IDX','inner');
+
+        $query = $this->db->get();
+
+        if ($query) {
+            $sizegroups = array();
+            foreach ($query->result() as $row) {
+                $sizegroup = $row->Size;
+
+                array_push($sizegroups, $sizegroup);
+            }
+
+            return $sizegroups;
+        } else {
+            return null;
+        }
+    }
+
+    public function getSideGroup($param) {
+        $this->db->select('*');
+        $this->db->from('pc_side');
+        $this->db->where('Product', $param['Product']);
+        $this->db->join('pc_cate','pc_side.CateIDX = pc_cate.IDX','inner');
+
+        $query = $this->db->get();
+
+        if ($query) {
+            $sidegroups = array();
+            foreach ($query->result() as $row) {
+                $sidegroup = $row->Side;
+
+                array_push($sidegroups, $sidegroup);
+            }
+
+            return $sidegroups;
+        } else {
+            return null;
+        }
+    }
+
     public function getPaperGroup($param) {
         $this->db->select('*');
         $this->db->from('pc_paper');
@@ -72,17 +137,31 @@ class Groups_model extends CI_Model
         $this->db->join('pc_customer', 'pc_customer.CustomerIDX = pc_orderlist.CustomerIDX', 'inner');
         $this->db->where('pc_orderlist.GroupID', $param['group_id']);
 
-        if(in_array('kind',$param)) {
-            $this->db->where('Category', $param['kind']);
+        if(array_key_exists('kind',$param)) {
+            if($param['kind'] != "ALL") {
+                $this->db->where('Category', $param['kind']);
+            }
         }
 
-        if(in_array('CustomerIDX',$param)) {
+        if(array_key_exists('CustomerIDX',$param)) {
             $this->db->where('CustomerIDX', $param['CustomerIDX']);
         }
 
-        $this->db->where('OrderState', '320');
+        if(array_key_exists('StateCode',$param)) {
+            if($param['StateCode'] != "000")
+                $this->db->where('OrderState', $param['StateCode']);
+        }
+
+        if(array_key_exists('StartDate',$param)) {
+            $this->db->where('OrderDate >=', $param['StartDate']);
+        }
+
+        if(array_key_exists('EndDate',$param)) {
+            $this->db->where('OrderDate <=', $param['EndDate'] . " 23:59:59");
+        }
+
+        //$this->db->where('OrderState', '320');
         $query = $this->db->get();
-        //echo $this->db->last_query();
         if ($query) {
             $orders = array();
             foreach ($query->result() as $row) {
@@ -91,6 +170,7 @@ class Groups_model extends CI_Model
                 $order["OrderName"] = $row->OrderName;
                 $order["Memo"] = $row->Memo;
                 $order["OrderDate"] = $row->OrderDate;
+                $order['State'] = $row->OrderState;
                 $order["Price"] = $row->Price;
                 $order["OrderIDX"] = $row->OrderIDX;
                 $order["Category"] = $row->Category;

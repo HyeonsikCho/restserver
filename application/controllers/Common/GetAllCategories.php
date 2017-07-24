@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hyeonsik
  * Date: 2017-06-01
- * Time: ¿ÀÀü 12:34
+ * Time: ï¿½ï¿½ï¿½ï¿½ 12:34
  */
 require_once APPPATH . '/libraries/REST_Controller.php';
 require_once APPPATH . '/libraries/JWT.php';
@@ -38,7 +38,7 @@ class GetAllCategories extends REST_Controller {
 
     public function send($param) {
         $json = array();
-        //$json['newtoken'] = parent::checkIfValidToken($param['token']);
+        $json['newtoken'] = parent::checkIfValidToken($param['token']);
 
         $categories = $this->Common_model->GetAllCategories();
         if($categories != null) {

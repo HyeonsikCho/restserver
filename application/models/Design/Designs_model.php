@@ -120,23 +120,29 @@ class Designs_model extends CI_Model
     }
 
     public function GetPreviewInfos($param) {
-        $this->db->select('*');
+        $this->db->select('pc_public_templete.*, pc_previewfile_history.OrderIDX');
         $this->db->from('pc_public_templete');
-        $this->db->where('Category', $param['Category']);
-        $this->db->where('Field', $param['Field']);
+        $this->db->where('pc_public_templete.Category', $param['Category']);
+        $this->db->where('pc_public_templete.Field', $param['Field']);
+        $this->db->join('pc_previewfile_history','pc_public_templete.IDX = pc_previewfile_history.TempleteIDX AND pc_previewfile_history.OrderIDX = ' . $param['OrderIDX'],'left');
         $query = $this->db->get();
 
-        //echo $this->db->last_query();
         if ($query) {
             $previews = array();
             foreach ($query->result() as $row) {
                 $preview = array();
                 $preview["IDX"] = $row->IDX;
-                $preview["Title"] = $row->FileName;
+                $preview["Title"] = $row->Title;
                 $preview["StorageFilePath"] = $row->PreviewStorageFilePath;
                 $preview["StorageFileName"] = $row->PreviewStorageFileName;
                 $preview["FilePath"] = $row->PreviewStorageFilePath;
                 $preview["FileName"] = $row->PreviewStorageFileName;
+                $preview["IsChecked"] = false;
+                $preview["IsEnabled"] = true;
+                if($row->OrderIDX != null) {
+                    $preview["IsChecked"] = true;
+                    $preview["IsEnabled"] = false;
+                }
 
                 array_push($previews, $preview);
             }

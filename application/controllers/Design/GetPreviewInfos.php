@@ -47,7 +47,7 @@ class GetPreviewInfos extends REST_Controller {
             $this->response(array('result' => $json));
         } else {
             $json['value'] = 'failed';
-            $json['previews'] = "";
+            $json['previews'] = "[]";
             $this->response(array('result' => $json));
         }
     }

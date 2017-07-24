@@ -19,16 +19,24 @@ class IsExistMemberID extends REST_Controller {
         $this->load->model('User/Users_model');
     }
 
-    public function index_get() {
-        $id = $this->get('member_id');
+    public function index_get()
+    {
+        $param = array();
+        foreach ($this->get() as $key => $value) {
+            $param[$key] = $this->input->get($key);
+        }
 
-        $this->send($id);
+        $this->send($param);
     }
 
-    public function index_post() {
-        $id = $this->post('member_id');
+    public function index_post()
+    {
+        $param = array();
+        foreach ($this->post() as $key => $value) {
+            $param[$key] = $this->input->post($key);
+        }
 
-        $this->send($id);
+        $this->send($param);
     }
 
 

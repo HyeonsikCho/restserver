@@ -19,23 +19,29 @@ class Login extends REST_Controller {
         $this->load->model('User/Users_model');
     }
 
-    public function index_get() {
-        $id = $this->get('user_id');
-        $pw = $this->get('user_pw');
+    public function index_get()
+    {
+        $param = array();
+        foreach ($this->get() as $key => $value) {
+            $param[$key] = $this->input->get($key);
+        }
 
-        $this->send($id, $pw);
+        $this->send($param);
     }
 
-    public function index_post() {
-        $id = $this->post('user_id');
-        $pw = $this->post('user_pw');
+    public function index_post()
+    {
+        $param = array();
+        foreach ($this->post() as $key => $value) {
+            $param[$key] = $this->input->post($key);
+        }
 
-        $this->send($id, $pw);
+        $this->send($param);
     }
 
-    public function send($id, $pw) {
-        $invalidLogin = ['invalid' => $id];
-        $token = $this->Users_model->Login($id,$pw);
+    public function send($param) {
+        $invalidLogin = ['invalid' => $param['user_id']];
+        $token = $this->Users_model->Login($param);
 
         if($token) {
             $json["code"] = "0000";
