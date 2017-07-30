@@ -2,22 +2,22 @@
 /**
  * Created by PhpStorm.
  * User: hyeonsik
- * Date: 2017-07-11
- * Time: 오전 6:15
+ * Date: 2017-07-26
+ * Time: 오전 12:28
  */
 
 require_once APPPATH . '/libraries/REST_Controller.php';
 require_once APPPATH . '/libraries/JWT.php';
 use \Firebase\JWT\JWT;
 
-class DeletePreviewFile extends REST_Controller
+class UpdateSpecInfos extends REST_Controller
 {
+
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('Group/Groups_model');
         $this->load->model('User/Users_model');
-        $this->load->model('Design/Designs_model');
-        $this->load->model('Customer/Customers_model');
     }
 
     public function index_get()
@@ -41,17 +41,11 @@ class DeletePreviewFile extends REST_Controller
     }
 
     public function send($param) {
+        $json = array();
         $json['newtoken'] = parent::checkIfValidToken($param['token']);
-        $param['GroupID'] = $this->Users_model->getGroupIDfromToken($param['token']);
 
-
-
-        if($this->Designs_model->deletePreviewFile($param)) {
-            $json['value'] = 'successed';
-            $this->response(array('result' => $json));
-        } else {
-            $json['value'] = 'failed';
-            $this->response(array('result' => $json));
-        }
+        $json['Sizes'] = $this->Groups_model->updateSpecInfos($param);
+        $json['value'] = 'successed';
+        $this->response(array('result' => $json));
     }
 }
