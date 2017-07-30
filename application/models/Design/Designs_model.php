@@ -85,6 +85,7 @@ class Designs_model extends CI_Model
             foreach ($query->result() as $row) {
                 $preview = array();
                 $preview["IDX"] = $row->IDX;
+                $preview["OrderIDX"] = $row->OrderIDX;
                 $preview["OriginalIDX"] = $row->OriginalIDX;
                 $preview["FileName"] = $row->FileName;
                 $preview["FileSize"] = $row->FileSize;
@@ -92,6 +93,7 @@ class Designs_model extends CI_Model
                 $preview["StorageFileName"] = $row->StorageFileName;
                 $preview["Worker"] = $row->Worker;
                 $preview["RegiDate"] = $row->RegiDate;
+                $preview["SideInfo"] = $row->SideInfo;
                 if($row->InUse == 'Y') {
                     $preview["InUse"] = true;
                 } else {
@@ -111,6 +113,41 @@ class Designs_model extends CI_Model
         $this->db->set('InUse', 'N');
         $this->db->where('IDX', $param['IDX']);
         $query = $this->db->update('pc_previewfile_history');
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function ReleasePreviousSelectedDesignPreview($param) {
+        $this->db->set('SideInfo', null);
+        $this->db->where('OrderIDX', $param['OrderIDX']);
+        $query = $this->db->update('pc_previewfile_history');
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function SelectAsDesignPreview($param) {
+        $this->db->set('SideInfo', 'V');
+        $this->db->where('IDX', $param['IDX']);
+        $query = $this->db->update('pc_previewfile_history');
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function DeleteDesignPreview($param) {
+        $this->db->where('IDX', $param['IDX']);
+        $query = $this->db->delete('pc_previewfile_history');
 
         if($query) {
             return true;

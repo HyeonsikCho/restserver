@@ -48,12 +48,62 @@ class Groups_model extends CI_Model
         if ($query) {
             $productgroups = array();
             foreach ($query->result() as $row) {
-                $productgroup = $row->Product;
+                $productgroup['IDX'] = $row->IDX;
+                $productgroup['DisplayString'] = $row->Product;
+                $productgroup['ProductName'] = $row->Product;
 
                 array_push($productgroups, $productgroup);
             }
 
             return $productgroups;
+        } else {
+            return null;
+        }
+    }
+
+    public function getSizeGroup($param) {
+        $this->db->select('pc_size.*');
+        $this->db->from('pc_size');
+        $this->db->where('Product', $param['Product']);
+        $this->db->join('pc_cate','pc_size.CateIDX = pc_cate.IDX','inner');
+
+        $query = $this->db->get();
+
+        if ($query) {
+            $sizegroups = array();
+            foreach ($query->result() as $row) {
+                $sizegroup['IDX'] = $row->IDX;
+                $sizegroup['SizeName'] = $row->Size;
+                $sizegroup['Width'] = $row->Width;
+                $sizegroup['Height'] = $row->Height;
+
+                array_push($sizegroups, $sizegroup);
+            }
+
+            return $sizegroups;
+        } else {
+            return null;
+        }
+    }
+
+    public function getSideGroup($param) {
+        $this->db->select('pc_side.*');
+        $this->db->from('pc_side');
+        $this->db->where('Product', $param['Product']);
+        $this->db->join('pc_cate','pc_side.CateIDX = pc_cate.IDX','inner');
+
+        $query = $this->db->get();
+
+        if ($query) {
+            $sidegroups = array();
+            foreach ($query->result() as $row) {
+                $sidegroup['IDX'] = $row->IDX;
+                $sidegroup['SideName'] = $row->Side;
+
+                array_push($sidegroups, $sidegroup);
+            }
+
+            return $sidegroups;
         } else {
             return null;
         }
@@ -74,6 +124,7 @@ class Groups_model extends CI_Model
                 }
 
                 $papergroup = array();
+                $papergroup['IDX'] = $row->IDX;
                 $papergroup['PaperName'] = $row->PaperName;
                 $papergroup['Weight'] = $row->Weight;
                 $papergroup['Color'] = $row->Color;
@@ -132,7 +183,12 @@ class Groups_model extends CI_Model
                 $order["Category"] = $row->Category;
                 $order["Address1"] = $row->Address1;
                 $order["Address2"] = $row->Address2;
-                $order["Zipcode"] = $row->Zipcode;
+                $order["CateIDX"] = $row->CateIDX;
+                $order["PaperIDX"] = $row->PaperIDX;
+                $order["SideIDX"] = $row->SideIDX;
+                $order["SizeIDX"] = $row->SizeIDX;
+                $order["Amt"] = $row->Amt;
+                $order["Count"] = $row->Count;
 
                 array_push($orders, $order);
             }
@@ -236,6 +292,23 @@ class Groups_model extends CI_Model
 
     public function cancelOrder($param) {
         $this->db->set('OrderState', '999');
+        $this->db->where('OrderIDX', $param['OrderIDX']);
+        $query = $this->db->update('pc_orderlist');
+
+        if($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function updateSpecInfos($param) {
+        $this->db->set('CateIDX',$param['CateIDX']);
+        $this->db->set('PaperIDX',$param['PaperIDX']);
+        $this->db->set('SideIDX',$param['SideIDX']);
+        $this->db->set('SizeIDX',$param['SizeIDX']);
+        $this->db->set('Amt',$param['Amt']);
+        $this->db->set('Count',$param['Count']);
         $this->db->where('OrderIDX', $param['OrderIDX']);
         $query = $this->db->update('pc_orderlist');
 
